@@ -1,0 +1,24 @@
+{
+  "name": "shinobi-point",
+  "version": "1.0.0",
+  "description": "Shinobi tutorial point.",
+  "main": "server.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mizu9877/shinobi-point.git"
+  },
+  "author": "mizu9877",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mizu9877/shinobi-point/issues"
+  },
+  "homepage": "https://github.com/mizu9877/shinobi-point#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mongoose": "^7.3.3"
+  }
+}
