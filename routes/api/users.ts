@@ -1,6 +1,7 @@
 import express from "express";
 import gravatar from "gravatar";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 const router = express.Router();
 
 const keys = require("../../config/keys");
@@ -12,7 +13,7 @@ const keys = require("../../config/keys");
 
 // Load Input Validation
 const validateRegisterInput = require("../../validation/register");
-// const validateLoginInput = require("../../validation/login");
+const validateLoginInput = require("../../validation/login");
 
 // Load user model
 const User = require("../../models/User");
@@ -22,7 +23,6 @@ router.get("/test", (req, res) => res.json({ msg: "User works" }));
 
 // api/users/register
 router.post("/register", (req, res) => {
-  console.log("req:", req.body);
   const { errors, isValid } = validateRegisterInput(req.body);
 
   if (!isValid) {
@@ -59,6 +59,54 @@ router.post("/register", (req, res) => {
         });
       });
     }
+  });
+});
+
+// api/users/login
+router.post("/login", (req, res) => {
+  const { errors, isValid } = validateLoginInput(req.body);
+
+  //initial check validation of the inputs
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  User.findOne({ email: req.body.email }).then((user: any) => {
+    if (!user) {
+      errors.email = "User not found.";
+      return res.status(404).json(errors);
+    }
+    // check password
+    bcrypt.compare(req.body.password, user.password).then((isMatch) => {
+      if (isMatch) {
+        // user matched
+        // create JWT payload
+        const payload = {
+          id: user.id,
+          name: user.name,
+          avatar: user.avatar,
+        };
+
+        // sigh token
+        // payload  - what we want include
+        // secret - key
+        // expiration
+        jwt.sign(
+          payload,
+          keys.secretOrKey,
+          { expiresIn: 3600 },
+          (err: any, token: any) => {
+            res.json({
+              success: true,
+              token: "Bearer " + token,
+            });
+          }
+        );
+      } else {
+        errors.password = "Incorrect password entered.";
+        return res.status(400).json(errors);
+      }
+    });
   });
 });
 
