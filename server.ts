@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import bodyParser from "body-parser";
 require("dotenv").config();
 
 const app = express();
@@ -9,6 +10,10 @@ const users = require("./routes/api/users");
 
 // DB config
 const db = require("./config/keys").mongoURI;
+
+// Body Parser middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

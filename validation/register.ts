@@ -1,8 +1,15 @@
 import Validator from "validator";
 const isEmpty = require("./is-empty");
 
-const validateRegisterInput = (data) => {
-  let errors = {};
+interface errorTypes {
+  name: string;
+  email: string;
+  password: string;
+  password2: string;
+}
+
+const validateRegisterInput = (data: errorTypes) => {
+  let errors = {} as errorTypes;
 
   // Need to check the each item is empty...
   data.name = !isEmpty(data.name) ? data.name : "";
@@ -10,7 +17,7 @@ const validateRegisterInput = (data) => {
   data.password = !isEmpty(data.password) ? data.password : "";
   data.password2 = !isEmpty(data.password2) ? data.password2 : "";
 
-  if (Validator.isLength(data.name, { min: 2, max: 30 })) {
+  if (!Validator.isLength(data.name, { min: 2, max: 30 })) {
     errors.name = "Name must be between 2 and 30 characters";
   }
 
